@@ -11,6 +11,7 @@
         "data/sequence.xml",
         "views/appointment_views.xml",
         "views/patient_readonly_views.xml",
+        "views/patient_tag_views.xml",
         "views/menu.xml",
     ]
 }

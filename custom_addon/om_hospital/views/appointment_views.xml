@@ -18,6 +18,18 @@
         <field name="model">hospital.appointment</field>
         <field name="arch" type="xml">
             <form string="appointments">
+                 <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'"
+                            class="oe_highlight"/>
+                    <button name="action_ongoing" type="object" string="ongoing" invisible="state != 'confirmed'"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object" string="Done" invisible="state != 'ongoing'"
+                            class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state == 'done'"/>
+                    <!--                    i want it to be controlled from the code base not clickable by button above -->
+                    <!--                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,ongoing,done"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
