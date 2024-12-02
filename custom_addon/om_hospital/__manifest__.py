@@ -6,6 +6,7 @@
         'mail', 'product'
     ],
     "data": [
+        "security/security.xml",
         "security/ir.model.access.csv",
         "views/patient_views.xml",
         "data/sequence.xml",
