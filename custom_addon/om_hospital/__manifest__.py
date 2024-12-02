@@ -3,7 +3,7 @@
     'author': 'Datawhizzy',
     'license': 'LGPL-3',
     'depends': [
-        'mail', 'product'
+        'mail', 'product', 'account'
     ],
     "data": [
         "security/security.xml",
@@ -14,6 +14,7 @@
         "views/appointment_line_views.xml",
         "views/patient_readonly_views.xml",
         "views/patient_tag_views.xml",
+        "views/account_move_views.xml",
         "views/menu.xml",
     ]
 }

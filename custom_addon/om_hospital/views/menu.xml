@@ -8,18 +8,22 @@
     />
 
     <menuitem id="menu_frontdesk"
-        name="Front Desk"
-        parent="menu_hospital_root"/>
+              name="Front Desk"
+              parent="menu_hospital_root"/>
 
     <menuitem id="menu_patients"
               name="Patients"
               parent="menu_frontdesk"
               action="action_hospital_patient"/>
 
+    <menuitem id="menu_billing"
+              name="Billing"
+              parent="menu_hospital_root"/>
+
     <menuitem id="menu_patients_readonly"
-        name="View Patients"
-        parent="menu_frontdesk"
-        action="action_hospital_readonly_patient"/>
+              name="View Patients"
+              parent="menu_frontdesk"
+              action="action_hospital_readonly_patient"/>
 
     <menuitem id="menu_appointment"
               name="Appointment"
@@ -47,6 +51,15 @@
               parent="menu_configuration"
               action="action_patient_tag"/>
 
+    <menuitem id="menu_hms_invoicing"
+              name="Invoice"
+              action="account.action_move_out_invoice_type"
+              parent="menu_billing"/>
+
+    <menuitem id="menu_hms_payment"
+              name="Payment"
+              action="account.action_account_payments"
+              parent="menu_billing"/>
 
 
 </odoo>

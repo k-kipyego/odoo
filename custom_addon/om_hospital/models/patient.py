@@ -11,6 +11,9 @@ class HospitalPatient(models.Model):
     date_of_birth = fields.Date(string='DOB', required=True)
     gender= fields.Selection([('male', 'Male'), ('female', 'Female')], string="Gender")
     tag_ids = fields.Many2many('patient.tag', 'patient_tag_rel', 'tag_id', string="Tags")
+    is_minor = fields.Boolean(string="Minor")
+    guardian = fields.Char(string="Guardian")
+    weight = fields.Float(string="Weight")
 
     @api.ondelete(at_uninstall=False)
     def _check_patient_appointment(self):
