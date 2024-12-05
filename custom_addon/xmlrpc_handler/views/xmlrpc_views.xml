@@ -1,4 +1,3 @@
-<!-- views/xmlrpc_views.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Connection Views -->
@@ -66,7 +65,7 @@
             <form>
                 <header>
                     <button name="action_execute" string="Execute" type="object"
-                            class="oe_highlight" states="draft"/>
+                            class="oe_highlight" modifiers="{'invisible': [('state', '!=', 'draft')]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -90,13 +89,13 @@
                     <notebook>
                         <page string="Operation Parameters">
                             <group>
-                                <field name="domain" attrs="{'invisible': [('operation', 'not in', ['search', 'search_read'])]}"/>
-                                <field name="fields_list" attrs="{'invisible': [('operation', 'not in', ['read', 'search_read'])]}"/>
-                                <field name="values" attrs="{'invisible': [('operation', 'not in', ['create', 'write'])]}"/>
-                                <field name="ids_list" attrs="{'invisible': [('operation', 'not in', ['read', 'write', 'unlink'])]}"/>
-                                <field name="method_name" attrs="{'invisible': [('operation', '!=', 'execute')]}"/>
-                                <field name="method_args" attrs="{'invisible': [('operation', '!=', 'execute')]}"/>
-                                <field name="method_kwargs" attrs="{'invisible': [('operation', '!=', 'execute')]}"/>
+                                <field name="domain" modifiers="{'invisible': [('operation', 'not in', ['search', 'search_read'])]}"/>
+                                <field name="fields_list" modifiers="{'invisible': [('operation', 'not in', ['read', 'search_read'])]}"/>
+                                <field name="values" modifiers="{'invisible': [('operation', 'not in', ['create', 'write'])]}"/>
+                                <field name="ids_list" modifiers="{'invisible': [('operation', 'not in', ['read', 'write', 'unlink'])]}"/>
+                                <field name="method_name" modifiers="{'invisible': [('operation', '!=', 'execute')]}"/>
+                                <field name="method_args" modifiers="{'invisible': [('operation', '!=', 'execute')]}"/>
+                                <field name="method_kwargs" modifiers="{'invisible': [('operation', '!=', 'execute')]}"/>
                             </group>
                         </page>
                         <page string="Result">
@@ -104,7 +103,7 @@
                                 <field name="result" nolabel="1"/>
                             </group>
                         </page>
-                        <page string="Error" attrs="{'invisible': [('error_message', '=', False)]}">
+                        <page string="Error" modifiers="{'invisible': [('error_message', '=', False)]}">
                             <group>
                                 <field name="error_message" nolabel="1"/>
                             </group>
