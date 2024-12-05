@@ -1,0 +1,48 @@
+<!-- views/menu_items.xml -->
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_xmlrpc_root"
+              name="XML-RPC"
+              sequence="100"
+              web_icon="odoo_xmlrpc_handler,static/description/icon.png"/>
+
+    <!-- Operations Menu -->
+    <record id="action_xmlrpc_handler" model="ir.actions.act_window">
+        <field name="name">Operations</field>
+        <field name="res_model">xmlrpc.handler</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_xmlrpc_operations"
+              name="Operations"
+              parent="menu_xmlrpc_root"
+              action="action_xmlrpc_handler"
+              sequence="10"/>
+
+    <!-- Connections Menu -->
+    <record id="action_xmlrpc_connection" model="ir.actions.act_window">
+        <field name="name">Connections</field>
+        <field name="res_model">xmlrpc.connection</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_xmlrpc_connections"
+              name="Connections"
+              parent="menu_xmlrpc_root"
+              action="action_xmlrpc_connection"
+              sequence="20"/>
+
+    <!-- Logs Menu -->
+    <record id="action_xmlrpc_log" model="ir.actions.act_window">
+        <field name="name">Operation Logs</field>
+        <field name="res_model">xmlrpc.log</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_xmlrpc_logs"
+              name="Logs"
+              parent="menu_xmlrpc_root"
+              action="action_xmlrpc_log"
+              sequence="30"/>
+</odoo>

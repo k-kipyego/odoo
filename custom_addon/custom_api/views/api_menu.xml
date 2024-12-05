@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions - Define these first -->
+    <record id="action_api_key" model="ir.actions.act_window">
+        <field name="name">API Keys</field>
+        <field name="res_model">custom.api.key</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_api_log" model="ir.actions.act_window">
+        <field name="name">API Logs</field>
+        <field name="res_model">custom.api.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items - Define these after the actions -->
+    <menuitem id="menu_custom_api_root"
+        name="Custom API"
+        sequence="100"/>
+
+    <menuitem id="menu_api_key"
+        name="API Keys"
+        parent="menu_custom_api_root"
+        action="action_api_key"
+        sequence="10"/>
+
+    <menuitem id="menu_api_log"
+        name="API Logs"
+        parent="menu_custom_api_root"
+        action="action_api_log"
+        sequence="20"/>
+</odoo>

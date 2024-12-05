@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_xmlrpc_handler_user,xmlrpc.handler.user,odoo_xmlrpc_handler.model_xmlrpc_handler,base.group_user,1,1,1,0
+access_xmlrpc_handler_admin,xmlrpc.handler.admin,odoo_xmlrpc_handler.model_xmlrpc_handler,base.group_system,1,1,1,1
+access_xmlrpc_connection_user,xmlrpc.connection.user,odoo_xmlrpc_handler.model_xmlrpc_connection,base.group_user,1,0,0,0
+access_xmlrpc_connection_admin,xmlrpc.connection.admin,odoo_xmlrpc_handler.model_xmlrpc_connection,base.group_system,1,1,1,1
+access_xmlrpc_log_user,xmlrpc.log.user,odoo_xmlrpc_handler.model_xmlrpc_log,base.group_user,1,1,1,0
+access_xmlrpc_log_admin,xmlrpc.log.admin,odoo_xmlrpc_handler.model_xmlrpc_log,base.group_system,1,1,1,1
