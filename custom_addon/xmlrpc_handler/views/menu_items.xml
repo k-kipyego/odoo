@@ -3,12 +3,11 @@
     <!-- Main Menu -->
     <menuitem id="menu_xmlrpc_root"
               name="XML-RPC"
-              sequence="100"
-              web_icon="odoo_xmlrpc_handler,static/description/icon.png"/>
+              sequence="100"/>
 
     <!-- Operations Menu -->
     <record id="action_xmlrpc_handler" model="ir.actions.act_window">
-        <field name="name">Operations</field>
+        <field name="name">XML-RPC Operations</field>
         <field name="res_model">xmlrpc.handler</field>
         <field name="view_mode">tree,form</field>
     </record>

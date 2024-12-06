@@ -5,3 +5,5 @@ access_xmlrpc_connection_user,xmlrpc.connection.user,model_xmlrpc_connection,bas
 access_xmlrpc_connection_admin,xmlrpc.connection.admin,model_xmlrpc_connection,base.group_system,1,1,1,1
 access_xmlrpc_log_user,xmlrpc.log.user,model_xmlrpc_log,base.group_user,1,1,1,0
 access_xmlrpc_log_admin,xmlrpc.log.admin,model_xmlrpc_log,base.group_system,1,1,1,1
+access_xmlrpc_operations_wizard,xmlrpc.operations.wizard,model_xmlrpc_operations_wizard,base.group_user,1,1,1,0
+

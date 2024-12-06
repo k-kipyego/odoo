@@ -6,19 +6,23 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="connection_id"/>
                     <field name="operation"/>
                 </group>
                 <footer>
-                    <button name="action_execute" string="Execute" type="object" class="btn-primary"/>
-                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                    <button name="action_execute"
+                            string="Execute"
+                            type="object"
+                            class="btn-primary"/>
+                    <button special="cancel"
+                            string="Cancel"
+                            class="btn-secondary"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_xmlrpc_operations_wizard" model="ir.actions.act_window">
-        <field name="name">XML-RPC Operations</field>
+        <field name="name">Quick Operations</field>
         <field name="res_model">xmlrpc.operations.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

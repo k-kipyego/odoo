@@ -1,9 +1,8 @@
-# models/xmlrpc_handler.py
 from odoo import models, fields, api
+from odoo.exceptions import UserError
+from ..tools.config import XMLRPCConfig
 import xmlrpc.client
-import json
 import logging
-from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -12,12 +11,9 @@ class XMLRPCHandler(models.Model):
     _name = 'xmlrpc.handler'
     _description = 'XML-RPC Operation Handler'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'create_date desc'
 
     name = fields.Char(string='Reference', required=True, copy=False,
                        readonly=True, default='New')
-    connection_id = fields.Many2one('xmlrpc.connection', string='Connection',
-                                    required=True)
     model_name = fields.Char(string='Model Name', required=True, tracking=True)
     operation = fields.Selection([
         ('execute', 'Execute Method'),
@@ -45,118 +41,62 @@ class XMLRPCHandler(models.Model):
 
     result = fields.Text('Result', readonly=True)
     error_message = fields.Text('Error', readonly=True)
-    execution_time = fields.Float('Execution Time (s)', readonly=True)
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('xmlrpc.operation') or 'New'
-        return super().create(vals)
 
     def action_execute(self):
-        self.ensure_one()
-        start_time = datetime.now()
-
+        """Executes the selected XML-RPC operation."""
+        if not self.operation:
+            raise UserError("Please specify an operation to execute.")
         try:
-            # Get connection
-            conn = self.connection_id
-            common = xmlrpc.client.ServerProxy(f'{conn.url}/xmlrpc/2/common')
-            uid = common.authenticate(conn.database, conn.username, conn.password, {})
+            # Establish connection
+            config = XMLRPCConfig()  # Assumes XMLRPCConfig is properly defined
+            common = xmlrpc.client.ServerProxy(f"{config.url}/xmlrpc/2/common")
+            uid = common.authenticate(config.db, config.username, config.api_key, {})
+            models = xmlrpc.client.ServerProxy(f"{config.url}/xmlrpc/2/object")
 
-            if not uid:
-                raise Exception('Authentication failed')
-
-            models = xmlrpc.client.ServerProxy(f'{conn.url}/xmlrpc/2/object')
-
-            # Execute based on operation type
-            result = self._execute_operation(models, uid, conn)
-
-            # Update record
-            execution_time = (datetime.now() - start_time).total_seconds()
-            self.write({
-                'state': 'done',
-                'result': str(result),
-                'execution_time': execution_time,
-                'error_message': False
-            })
-
-            # Log operation
-            self.env['xmlrpc.log'].create({
-                'handler_id': self.id,
-                'execution_time': execution_time,
-                'result': str(result)
-            })
-
-            return result
-
+            # Handle different operations
+            if self.operation == 'search':
+                domain = eval(self.domain or '[]')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'search', [domain]))
+            elif self.operation == 'read':
+                ids = eval(self.ids_list or '[]')
+                fields = eval(self.fields_list or '[]')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'read', [ids], {'fields': fields}))
+            elif self.operation == 'search_read':
+                domain = eval(self.domain or '[]')
+                fields = eval(self.fields_list or '[]')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'search_read', [domain], {'fields': fields}))
+            elif self.operation == 'create':
+                values = eval(self.values or '{}')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'create', [values]))
+            elif self.operation == 'write':
+                ids = eval(self.ids_list or '[]')
+                values = eval(self.values or '{}')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'write', [ids, values]))
+            elif self.operation == 'unlink':
+                ids = eval(self.ids_list or '[]')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, 'unlink', [ids]))
+            elif self.operation == 'execute':
+                args = eval(self.method_args or '[]')
+                kwargs = eval(self.method_kwargs or '{}')
+                self.result = str(models.execute_kw(
+                    config.db, uid, config.api_key,
+                    self.model_name, self.method_name, args, kwargs))
+            else:
+                raise UserError("Invalid operation specified.")
+            self.state = 'done'
         except Exception as e:
-            execution_time = (datetime.now() - start_time).total_seconds()
-            self.write({
-                'state': 'failed',
-                'error_message': str(e),
-                'execution_time': execution_time
-            })
-            _logger.error('XML-RPC Operation failed: %s', str(e))
-            raise
-
-    def _execute_operation(self, models, uid, conn):
-        """Execute the XML-RPC operation"""
-        if self.operation == 'search':
-            domain = eval(self.domain or '[]')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'search',
-                [domain]
-            )
-
-        elif self.operation == 'read':
-            ids = eval(self.ids_list or '[]')
-            fields = eval(self.fields_list or '[]')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'read',
-                [ids], {'fields': fields}
-            )
-
-        elif self.operation == 'search_read':
-            domain = eval(self.domain or '[]')
-            fields = eval(self.fields_list or '[]')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'search_read',
-                [domain], {'fields': fields}
-            )
-
-        elif self.operation == 'create':
-            values = eval(self.values or '{}')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'create',
-                [values]
-            )
-
-        elif self.operation == 'write':
-            ids = eval(self.ids_list or '[]')
-            values = eval(self.values or '{}')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'write',
-                [ids, values]
-            )
-
-        elif self.operation == 'unlink':
-            ids = eval(self.ids_list or '[]')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, 'unlink',
-                [ids]
-            )
-
-        elif self.operation == 'execute':
-            args = eval(self.method_args or '[]')
-            kwargs = eval(self.method_kwargs or '{}')
-            return models.execute_kw(
-                conn.database, uid, conn.password,
-                self.model_name, self.method_name,
-                args, kwargs
-            )
+            _logger.error("XML-RPC Error: %s", str(e))
+            self.error_message = str(e)
+            self.state = 'failed'

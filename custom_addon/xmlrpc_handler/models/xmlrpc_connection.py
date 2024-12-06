@@ -10,14 +10,14 @@ class XMLRPCConnection(models.Model):
     url = fields.Char('Server URL', required=True, default='http://localhost:8069')
     database = fields.Char('Database Name', required=True)
     username = fields.Char('Username', required=True)
-    password = fields.Char('Password', required=True)
+    api_key = fields.Char('API Key', required=True)
     active = fields.Boolean('Active', default=True)
 
     def test_connection(self):
         self.ensure_one()
         try:
             common = xmlrpc.client.ServerProxy(f'{self.url}/xmlrpc/2/common')
-            uid = common.authenticate(self.database, self.username, self.password, {})
+            uid = common.authenticate(self.database, self.username, self.api_key, {})
             if uid:
                 return {
                     'type': 'ir.actions.client',

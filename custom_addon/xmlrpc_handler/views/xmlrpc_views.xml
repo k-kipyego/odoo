@@ -1,71 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Connection Views -->
-    <record id="view_xmlrpc_connection_tree" model="ir.ui.view">
-        <field name="name">xmlrpc.connection.tree</field>
-        <field name="model">xmlrpc.connection</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="url"/>
-                <field name="database"/>
-                <field name="username"/>
-                <field name="active"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_xmlrpc_connection_form" model="ir.ui.view">
-        <field name="name">xmlrpc.connection.form</field>
-        <field name="model">xmlrpc.connection</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="test_connection" string="Test Connection" type="object" class="oe_highlight"/>
-                </header>
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="url"/>
-                            <field name="database"/>
-                        </group>
-                        <group>
-                            <field name="username"/>
-                            <field name="password" password="true"/>
-                            <field name="active"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Handler Views -->
-    <record id="view_xmlrpc_handler_tree" model="ir.ui.view">
-        <field name="name">xmlrpc.handler.tree</field>
-        <field name="model">xmlrpc.handler</field>
-        <field name="arch" type="xml">
-            <tree decoration-success="state=='done'" decoration-danger="state=='failed'">
-                <field name="name"/>
-                <field name="connection_id"/>
-                <field name="model_name"/>
-                <field name="operation"/>
-                <field name="execution_time"/>
-                <field name="state"/>
-                <field name="create_date"/>
-            </tree>
-        </field>
-    </record>
-
+    <!-- Form View -->
     <record id="view_xmlrpc_handler_form" model="ir.ui.view">
         <field name="name">xmlrpc.handler.form</field>
         <field name="model">xmlrpc.handler</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="XML-RPC Operation">
                 <header>
-                    <button name="action_execute" string="Execute" type="object"
-                            class="oe_highlight" modifiers="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <!-- Replace attrs with modifiers -->
+                    <button name="action_execute" string="Execute"
+                            type="object" class="oe_highlight"
+                            modifiers="{'invisible': [('state', '!=', 'draft')]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -76,14 +21,8 @@
                     </div>
                     <group>
                         <group>
-                            <field name="connection_id"/>
                             <field name="model_name"/>
                             <field name="operation"/>
-                        </group>
-                        <group>
-                            <field name="execution_time" widget="float_time"/>
-                            <field name="create_date"/>
-                            <field name="write_date"/>
                         </group>
                     </group>
                     <notebook>
@@ -118,19 +57,39 @@
         </field>
     </record>
 
-    <!-- Log Views -->
-    <record id="view_xmlrpc_log_tree" model="ir.ui.view">
-        <field name="name">xmlrpc.log.tree</field>
-        <field name="model">xmlrpc.log</field>
+    <!-- Tree View -->
+    <record id="view_xmlrpc_handler_tree" model="ir.ui.view">
+        <field name="name">xmlrpc.handler.tree</field>
+        <field name="model">xmlrpc.handler</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="create_date"/>
-                <field name="handler_id"/>
+            <tree decoration-success="state=='done'" decoration-danger="state=='failed'">
+                <field name="name"/>
                 <field name="model_name"/>
                 <field name="operation"/>
-                <field name="user_id"/>
-                <field name="execution_time"/>
+                <field name="state"/>
+                <field name="create_date"/>
             </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_xmlrpc_handler_search" model="ir.ui.view">
+        <field name="name">xmlrpc.handler.search</field>
+        <field name="model">xmlrpc.handler</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="model_name"/>
+                <field name="operation"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Done" name="done" domain="[('state','=','done')]"/>
+                <filter string="Failed" name="failed" domain="[('state','=','failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Operation" name="group_operation" context="{'group_by': 'operation'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Model" name="group_model" context="{'group_by': 'model_name'}"/>
+                </group>
+            </search>
         </field>
     </record>
 </odoo>
